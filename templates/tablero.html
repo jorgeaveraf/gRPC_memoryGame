@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tablero</title>
+  <style>
+    table { margin: auto; border-collapse: collapse; }
+    td { 
+      width: 60px; height: 60px; 
+      font-size: 2em; text-align: center; 
+      border: 1px solid #ccc; 
+      cursor: pointer;
+      user-select: none;
+    }
+    td.flipped {
+      background: #eef;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 Tablero de Juego</h1>
+  <p><strong>Turno actual:</strong> {{ turno }}</p>
+
+  <!-- Form oculto que enviará las dos coordenadas -->
+  <form id="playForm" method="post" action="{{ url_for('jugar_post') }}">
+    <input type="hidden" name="x1" id="x1">
+    <input type="hidden" name="y1" id="y1">
+    <input type="hidden" name="x2" id="x2">
+    <input type="hidden" name="y2" id="y2">
+  </form>
+
+  <h3>🧩 Pincha dos cartas:</h3>
+  <table>
+    {% for i, fila in enumerate(board) %}
+    <tr>
+      {% for j, celda in enumerate(fila) %}
+      <td id="cell-{{i}}-{{j}}" onclick="onCardClick({{i}}, {{j}})">
+        {{ celda }}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h3>🔢 Puntajes</h3>
+  <ul>
+    {% for pid, score in puntos.items() %}
+      <li><code>{{ pid[:8] }}</code>: {{ score }}</li>
+    {% endfor %}
+  </ul>
+
+  <script>
+    // Array para guardar las dos selecciones
+    let picks = [];
+
+    function onCardClick(x, y) {
+      // no permitir escoger si no es tu turno
+      if ("{{ turno }}" !== "{{ session.get('player_id')[:8] }}") {
+        alert("¡No es tu turno!");
+        return;
+      }
+
+      picks.push({ x, y });
+
+      // marcar visualmente la carta seleccionada
+      const cell = document.getElementById(`cell-${x}-${y}`);
+      cell.classList.add('flipped');
+
+      if (picks.length === 2) {
+        // completar campos ocultos y enviar form
+        document.getElementById('x1').value = picks[0].x;
+        document.getElementById('y1').value = picks[0].y;
+        document.getElementById('x2').value = picks[1].x;
+        document.getElementById('y2').value = picks[1].y;
+        document.getElementById('playForm').submit();
+      }
+    }
+  </script>
+</body>
+</html>

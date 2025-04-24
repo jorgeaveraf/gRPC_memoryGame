@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package memorygame;
+
+service MemoryGame {
+  // Unirse al juego con un nombre, devuelve un ID único
+  rpc JoinGame (PlayerInfo) returns (PlayerId);
+
+  // Enviar una jugada (2 coordenadas) al servidor
+  rpc PlayTurn (TurnRequest) returns (TurnResponse);
+
+  // Obtener el estado actual del tablero
+  rpc GetBoardState (PlayerId) returns (BoardState);
+
+  // Suscripción a actualizaciones en tiempo real del juego
+  rpc SubscribeToUpdates (PlayerId) returns (stream BoardState);
+}
+
+// Mensaje para registrar un jugador
+message PlayerInfo {
+  string name = 1;
+}
+
+// Respuesta con el ID asignado al jugador
+message PlayerId {
+  string id = 1;
+}
+
+// Una jugada (selección de dos cartas)
+message TurnRequest {
+  string player_id = 1;
+  int32 x1 = 2;
+  int32 y1 = 3;
+  int32 x2 = 4;
+  int32 y2 = 5;
+}
+
+// Resultado de la jugada
+message TurnResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Una celda del tablero
+message Cell {
+  int32 x = 1;
+  int32 y = 2;
+  string value = 3;      // Emoji o símbolo
+  bool revealed = 4;     // ¿Está visible?
+  bool matched = 5;      // ¿Está emparejada?
+}
+
+// Estado completo del tablero y del juego
+message BoardState {
+  repeated Cell cells = 1;
+  string current_turn_player_id = 2;
+  map<string, int32> scores = 3;  // player_id → score
+  bool game_over = 4;
+}

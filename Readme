@@ -1,0 +1,10 @@
+Construye tu imagen:
+
+docker build -t memory-client .
+
+Lanza el contenedor:
+docker run -d -p 8081:8081 \
+  -e MEMORY_SERVER=192.168.1.42:50051 \
+  memory-client
+
+Accede a http://<IP-del-servidor>:8081

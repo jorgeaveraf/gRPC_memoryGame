@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Unirse al juego</title>
+</head>
+<body>
+  <h1>🎮 Regístrate</h1>
+  <form method="post" action="{{ url_for('index') }}">
+    <label>Nombre: <input name="name" required></label><br>
+    <label>Edad:   <input name="age" type="number" min="1" max="120" required></label><br>
+    <label>Sexo:
+      <select name="gender">
+        <option value="Masculino">Masculino</option>
+        <option value="Femenino">Femenino</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </label><br><br>
+    <button type="submit">Entrar</button>
+  </form>
+</body>
+</html>

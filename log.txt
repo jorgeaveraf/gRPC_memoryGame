@@ -1,0 +1,32 @@
+{"timestamp": "2025-04-26T20:04:06.036097", "players": [{"id": "d0a35b93-2ad4-4851-8cc8-ee5d826d1fff", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 2}]}
+{"timestamp": "2025-04-26T20:18:32.041850", "players": [{"id": "c6b58925-ac22-49c8-82f9-218919b2d0a0", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 3}]}
+{"timestamp": "2025-04-26T20:29:22.504659", "players": [{"id": "5a2efb86-1d1a-4713-bfa3-a4362544acec", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 2}, {"id": "9b8df7f7-0821-42db-9f6b-08b9d074b3d3", "name": "Jorge Vera", "age": 10, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T20:33:13.752545", "players": [{"id": "b0b3b9c8-61a7-43ae-8aa9-00133ec5ace5", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 1}]}
+{"timestamp": "2025-04-26T20:37:38.765564", "players": [{"id": "19c801cc-e84e-411e-9978-e372e7d08fbc", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}, {"id": "c8f5ce73-fb45-4af4-87a5-e6ed5690e0d3", "name": "Nat", "age": 31, "gender": "Femenino", "score": 1}, {"id": "afdfb9a6-a92d-465c-9e33-abd0d4ab5c55", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 7}]}
+{"timestamp": "2025-04-26T20:39:07.289691", "players": [{"id": "19c801cc-e84e-411e-9978-e372e7d08fbc", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}, {"id": "c8f5ce73-fb45-4af4-87a5-e6ed5690e0d3", "name": "Nat", "age": 31, "gender": "Femenino", "score": 1}, {"id": "afdfb9a6-a92d-465c-9e33-abd0d4ab5c55", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 7}]}
+{"timestamp": "2025-04-26T20:42:39.324124", "players": [{"id": "ba514c2c-361c-4e68-8d55-cb3bbaa559c4", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T21:25:50.330028", "players": []}
+{"timestamp": "2025-04-26T21:28:18.429505", "players": []}
+{"timestamp": "2025-04-26T21:29:25.617012", "players": [{"id": "c1ab9924-3c36-4e8d-800a-e0db2f64faac", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 1}]}
+{"timestamp": "2025-04-26T21:40:23.659881", "players": []}
+{"timestamp": "2025-04-26T21:44:01.888665", "players": [{"id": "d76ff276-213a-4f65-9e6f-a6c70cd57f2d", "name": "Jorge Vera", "age": 1, "gender": "Masculino", "score": 1}]}
+{"timestamp": "2025-04-26T21:54:53.104770", "players": [{"id": "c7246fb0-f0b6-4146-b07f-09766fdd1a08", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 1}]}
+{"timestamp": "2025-04-26T21:57:13.266133", "players": [{"id": "b8b904c7-e83e-4fa6-95bf-6f78b5ba3056", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T22:00:43.229499", "players": [{"id": "cdc533f1-14fa-4046-9180-32e1ee7f8834", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T22:04:58.019760", "players": [{"id": "0e36b58e-666e-4a94-9fab-744b02d44c41", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}, {"id": "ca2277aa-b972-4e63-8ac9-440dd60a9f32", "name": "Jorge Vera", "age": 3, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T22:06:15.536967", "players": []}
+{"timestamp": "2025-04-26T22:06:59.054640", "players": [{"id": "1d47d01c-a3ed-44f9-9a18-ae0653b2c8b5", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}]}
+{"timestamp": "2025-04-26T22:08:04.444738", "players": []}
+{"timestamp": "2025-04-26T22:10:37.665272", "players": [{"id": "fca8a3ed-8e12-45e4-a419-3dcd411915b7", "name": "Nat", "age": 31, "gender": "Femenino", "score": 1}]}
+{"timestamp": "2025-04-26T22:12:28.984878", "players": []}
+{"timestamp": "2025-04-26T22:13:14.438169", "players": []}
+{"timestamp": "2025-04-27T10:12:54.103029", "players": [{"id": "c4f16466-0c25-4b16-91ba-0b5e8f085fb9", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 2}, {"id": "0339d27e-af19-4fd4-a1e4-e9efd89cde8c", "name": "Nat", "age": 29, "gender": "Femenino", "score": 1}]}
+{"timestamp": "2025-04-27T10:14:18.672098", "players": [{"id": "33862378-21f2-4272-bfed-dd371009ea96", "name": "Nat", "age": 2, "gender": "Femenino", "score": 1}]}
+{"timestamp": "2025-04-27T10:26:06.162426", "players": [{"id": "1950d31f-2c64-4d04-ba7f-64001e0596d0", "name": "Nat", "age": 31, "gender": "Femenino", "score": 0}, {"id": "8d41af71-a231-4653-8784-4c846b904714", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}, {"id": "5aed80b3-6151-4e1d-957e-88e00f838cb4", "name": "Hey", "age": 29, "gender": "Femenino", "score": 8}]}
+{"timestamp": "2025-04-27T10:28:49.529447", "players": [{"id": "1950d31f-2c64-4d04-ba7f-64001e0596d0", "name": "Nat", "age": 31, "gender": "Femenino", "score": 0}, {"id": "8d41af71-a231-4653-8784-4c846b904714", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 0}, {"id": "5aed80b3-6151-4e1d-957e-88e00f838cb4", "name": "Hey", "age": 29, "gender": "Femenino", "score": 8}]}
+{"timestamp": "2025-04-27T10:39:15.860188", "players": [{"id": "bd3472fe-c0d8-41d1-baef-b0cac0ff0367", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 8}]}
+{"timestamp": "2025-04-27T10:50:57.732918", "players": [{"id": "bd3472fe-c0d8-41d1-baef-b0cac0ff0367", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 8}, {"id": "a1a37180-d936-4f5d-8aa4-9d12e72a74e9", "name": "Nat", "age": 1, "gender": "Femenino", "score": 0}]}
+{"timestamp": "2025-04-27T11:18:38.986908", "theme": "countries", "difficulty": "easy", "final_board_size": 4, "players": []}
+{"timestamp": "2025-04-27T11:19:53.774718", "theme": "countries", "difficulty": "easy", "final_board_size": 4, "players": []}
+{"timestamp": "2025-04-27T11:21:43.629558", "theme": "countries", "difficulty": "easy", "final_board_size": 4, "players": [{"id": "261f0983-7635-4270-8957-a3e8a37653ae", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 8, "turns_taken": 17, "pairs_formed": 8, "total_time_seconds": 82.63, "avg_turn_time_seconds": 4.86, "final_position": 1}]}
+{"timestamp": "2025-04-27T11:58:57.707701", "theme": "countries", "difficulty": "easy", "final_board_size": 4, "players": [{"id": "261f0983-7635-4270-8957-a3e8a37653ae", "name": "Jorge Vera", "age": 29, "gender": "Masculino", "score": 8, "turns_taken": 17, "pairs_formed": 8, "total_time_seconds": 2316.71, "avg_turn_time_seconds": 4.86, "final_position": 1}]}

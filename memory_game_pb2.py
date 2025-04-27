@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11memory_game.proto\x12\nmemorygame\"\x1a\n\nPlayerInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x16\n\x08PlayerId\x12\n\n\x02id\x18\x01 \x01(\t\"P\n\x0bTurnRequest\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\n\n\x02x1\x18\x02 \x01(\x05\x12\n\n\x02y1\x18\x03 \x01(\x05\x12\n\n\x02x2\x18\x04 \x01(\x05\x12\n\n\x02y2\x18\x05 \x01(\x05\"0\n\x0cTurnResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"N\n\x04\x43\x65ll\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x12\r\n\x05value\x18\x03 \x01(\t\x12\x10\n\x08revealed\x18\x04 \x01(\x08\x12\x0f\n\x07matched\x18\x05 \x01(\x08\"\xc3\x01\n\nBoardState\x12\x1f\n\x05\x63\x65lls\x18\x01 \x03(\x0b\x32\x10.memorygame.Cell\x12\x1e\n\x16\x63urrent_turn_player_id\x18\x02 \x01(\t\x12\x32\n\x06scores\x18\x03 \x03(\x0b\x32\".memorygame.BoardState.ScoresEntry\x12\x11\n\tgame_over\x18\x04 \x01(\x08\x1a-\n\x0bScoresEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x32\x8a\x02\n\nMemoryGame\x12\x38\n\x08JoinGame\x12\x16.memorygame.PlayerInfo\x1a\x14.memorygame.PlayerId\x12=\n\x08PlayTurn\x12\x17.memorygame.TurnRequest\x1a\x18.memorygame.TurnResponse\x12=\n\rGetBoardState\x12\x14.memorygame.PlayerId\x1a\x16.memorygame.BoardState\x12\x44\n\x12SubscribeToUpdates\x12\x14.memorygame.PlayerId\x1a\x16.memorygame.BoardState0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11memory_game.proto\x12\nmemorygame\"7\n\nPlayerInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03\x61ge\x18\x02 \x01(\x05\x12\x0e\n\x06gender\x18\x03 \x01(\t\"\x16\n\x08PlayerId\x12\n\n\x02id\x18\x01 \x01(\t\"P\n\x0bTurnRequest\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\n\n\x02x1\x18\x02 \x01(\x05\x12\n\n\x02y1\x18\x03 \x01(\x05\x12\n\n\x02x2\x18\x04 \x01(\x05\x12\n\n\x02y2\x18\x05 \x01(\x05\"0\n\x0cTurnResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"N\n\x04\x43\x65ll\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x12\r\n\x05value\x18\x03 \x01(\t\x12\x10\n\x08revealed\x18\x04 \x01(\x08\x12\x0f\n\x07matched\x18\x05 \x01(\x08\"\xb6\x02\n\nBoardState\x12\x1f\n\x05\x63\x65lls\x18\x01 \x03(\x0b\x32\x10.memorygame.Cell\x12\x1e\n\x16\x63urrent_turn_player_id\x18\x02 \x01(\t\x12\x32\n\x06scores\x18\x03 \x03(\x0b\x32\".memorygame.BoardState.ScoresEntry\x12=\n\x0cplayer_names\x18\x04 \x03(\x0b\x32\'.memorygame.BoardState.PlayerNamesEntry\x12\x11\n\tgame_over\x18\x05 \x01(\x08\x1a-\n\x0bScoresEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x1a\x32\n\x10PlayerNamesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x8a\x02\n\nMemoryGame\x12\x38\n\x08JoinGame\x12\x16.memorygame.PlayerInfo\x1a\x14.memorygame.PlayerId\x12=\n\x08PlayTurn\x12\x17.memorygame.TurnRequest\x1a\x18.memorygame.TurnResponse\x12=\n\rGetBoardState\x12\x14.memorygame.PlayerId\x1a\x16.memorygame.BoardState\x12\x44\n\x12SubscribeToUpdates\x12\x14.memorygame.PlayerId\x1a\x16.memorygame.BoardState0\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,20 +33,24 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_BOARDSTATE_SCORESENTRY']._loaded_options = None
   _globals['_BOARDSTATE_SCORESENTRY']._serialized_options = b'8\001'
+  _globals['_BOARDSTATE_PLAYERNAMESENTRY']._loaded_options = None
+  _globals['_BOARDSTATE_PLAYERNAMESENTRY']._serialized_options = b'8\001'
   _globals['_PLAYERINFO']._serialized_start=33
-  _globals['_PLAYERINFO']._serialized_end=59
-  _globals['_PLAYERID']._serialized_start=61
-  _globals['_PLAYERID']._serialized_end=83
-  _globals['_TURNREQUEST']._serialized_start=85
-  _globals['_TURNREQUEST']._serialized_end=165
-  _globals['_TURNRESPONSE']._serialized_start=167
-  _globals['_TURNRESPONSE']._serialized_end=215
-  _globals['_CELL']._serialized_start=217
-  _globals['_CELL']._serialized_end=295
-  _globals['_BOARDSTATE']._serialized_start=298
-  _globals['_BOARDSTATE']._serialized_end=493
-  _globals['_BOARDSTATE_SCORESENTRY']._serialized_start=448
-  _globals['_BOARDSTATE_SCORESENTRY']._serialized_end=493
-  _globals['_MEMORYGAME']._serialized_start=496
-  _globals['_MEMORYGAME']._serialized_end=762
+  _globals['_PLAYERINFO']._serialized_end=88
+  _globals['_PLAYERID']._serialized_start=90
+  _globals['_PLAYERID']._serialized_end=112
+  _globals['_TURNREQUEST']._serialized_start=114
+  _globals['_TURNREQUEST']._serialized_end=194
+  _globals['_TURNRESPONSE']._serialized_start=196
+  _globals['_TURNRESPONSE']._serialized_end=244
+  _globals['_CELL']._serialized_start=246
+  _globals['_CELL']._serialized_end=324
+  _globals['_BOARDSTATE']._serialized_start=327
+  _globals['_BOARDSTATE']._serialized_end=637
+  _globals['_BOARDSTATE_SCORESENTRY']._serialized_start=540
+  _globals['_BOARDSTATE_SCORESENTRY']._serialized_end=585
+  _globals['_BOARDSTATE_PLAYERNAMESENTRY']._serialized_start=587
+  _globals['_BOARDSTATE_PLAYERNAMESENTRY']._serialized_end=637
+  _globals['_MEMORYGAME']._serialized_start=640
+  _globals['_MEMORYGAME']._serialized_end=906
 # @@protoc_insertion_point(module_scope)

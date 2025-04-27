@@ -19,6 +19,8 @@ service MemoryGame {
 // Mensaje para registrar un jugador
 message PlayerInfo {
   string name = 1;
+  int32 age = 2;
+  string gender = 3;
 }
 
 // Respuesta con el ID asignado al jugador
@@ -55,5 +57,6 @@ message BoardState {
   repeated Cell cells = 1;
   string current_turn_player_id = 2;
   map<string, int32> scores = 3;  // player_id → score
-  bool game_over = 4;
+  map<string, string> player_names = 4;
+  bool game_over = 5;
 }

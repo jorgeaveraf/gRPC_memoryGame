@@ -1,26 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tablero</title>
+  <title>Tablero de {{ player_name }}</title>
   <style>
+    body { font-family: sans-serif; text-align: center; }
     table { margin: auto; border-collapse: collapse; }
-    td { 
-      width: 60px; height: 60px; 
-      font-size: 2em; text-align: center; 
-      border: 1px solid #ccc; 
+    td {
+      width: 60px; height: 60px;
+      font-size: 2em; text-align: center;
+      border: 1px solid #ccc;
       cursor: pointer;
       user-select: none;
+      transition: background 0.2s;
     }
-    td.flipped {
-      background: #eef;
+    td.flipped { background: #eef; }
+
+    /* Banner de game over */
+    #gameOverBanner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #fffae6;
+      color: #333;
+      padding: 1em;
+      font-size: 1.5em;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
-  <h1>🎲 Tablero de Juego</h1>
-  <p><strong>Turno actual:</strong> {{ turno }}</p>
+  <!-- Banner que aparece cuando game_over == true -->
+  <div id="gameOverBanner">
+    🏆 ¡Juego terminado! Ganador: <span id="winnerName"></span>
+  </div>
 
-  <!-- Form oculto que enviará las dos coordenadas -->
+  <h1>🎲 Tablero de {{ player_name }}</h1>
+  <p><strong>Turno actual:</strong>
+    <span id="turno">{{ player_names[turno_id] }}</span>
+  </p>
+
+  <!-- Form oculto para enviar los dos clics -->
   <form id="playForm" method="post" action="{{ url_for('jugar_post') }}">
     <input type="hidden" name="x1" id="x1">
     <input type="hidden" name="y1" id="y1">
@@ -30,50 +49,104 @@
 
   <h3>🧩 Pincha dos cartas:</h3>
   <table>
-    {% for i, fila in enumerate(board) %}
-    <tr>
-      {% for j, celda in enumerate(fila) %}
-      <td id="cell-{{i}}-{{j}}" onclick="onCardClick({{i}}, {{j}})">
-        {{ celda }}
-      </td>
+    {% for x in range(size) %}
+      <tr>
+      {% for y in range(size) %}
+        {% set idx = x * size + y %}
+        {% set c = cells[idx] %}
+        <td id="cell-{{x}}-{{y}}"
+            data-value="{{ c.value }}"
+            class="{{ 'flipped' if (c.revealed or c.matched) else '' }}"
+            onclick="onCardClick({{x}},{{y}})">
+          {{ c.value if (c.revealed or c.matched) else '🂠' }}
+        </td>
       {% endfor %}
-    </tr>
+      </tr>
     {% endfor %}
   </table>
 
   <h3>🔢 Puntajes</h3>
-  <ul>
+  <ul id="scores">
     {% for pid, score in puntos.items() %}
-      <li><code>{{ pid[:8] }}</code>: {{ score }}</li>
+      <li><strong>{{ player_names.get(pid, pid[:8]) }}</strong>: {{ score }} parejas</li>
     {% endfor %}
   </ul>
 
   <script>
-    // Array para guardar las dos selecciones
-    let picks = [];
+    let picks = [], polling;
 
-    function onCardClick(x, y) {
-      // no permitir escoger si no es tu turno
-      if ("{{ turno }}" !== "{{ session.get('player_id')[:8] }}") {
-        alert("¡No es tu turno!");
+    function startPolling() {
+      polling = setInterval(fetchBoard, 3000);
+    }
+    function stopPolling() {
+      clearInterval(polling);
+    }
+
+    async function fetchBoard() {
+      const res = await fetch('/state');
+      const data = await res.json();
+
+      // 1) Actualiza celdas
+      data.cells.forEach(c => {
+        const td = document.getElementById(`cell-${c.x}-${c.y}`);
+        // no pisar las que el usuario ya acaba de seleccionar
+        if (picks.some(p=>p.x===c.x && p.y===c.y)) return;
+        const show = c.revealed || c.matched;
+        td.innerText = show ? c.value : '🂠';
+        td.classList.toggle('flipped', show);
+      });
+
+      // 2) Actualiza turno
+      document.getElementById('turno').innerText = data.current_turn_name;
+
+      // 3) Actualiza puntajes
+      const ul = document.getElementById('scores');
+      ul.innerHTML = '';
+      for (const [pid, pts] of Object.entries(data.scores)) {
+        const li = document.createElement('li');
+        const name = data.player_names[pid] || pid.slice(0,8);
+        li.innerHTML = `<strong>${name}</strong>: ${pts} parejas`;
+        ul.appendChild(li);
+      }
+
+      // 4) Si terminó, muestro banner y detengo polling
+      if (data.game_over) {
+        stopPolling();
+        document.getElementById('winnerName').innerText = data.winner_name;
+        document.getElementById('gameOverBanner').style.display = 'block';
+      }
+    }
+
+    function onCardClick(x,y) {
+      // 1) Si no es tu turno o ya volteada, ignoro
+      if ("{{ turno_id }}" !== "{{ session['player_id'] }}"
+          || document.getElementById(`cell-${x}-${y}`).classList.contains('flipped')) {
         return;
       }
 
-      picks.push({ x, y });
+      // 2) Detengo refresco automático para no sobreescribir selección
+      stopPolling();
 
-      // marcar visualmente la carta seleccionada
+      // 3) Revelo visualmente
       const cell = document.getElementById(`cell-${x}-${y}`);
       cell.classList.add('flipped');
+      cell.innerText = cell.dataset.value;
+      picks.push({x,y});
 
+      // 4) Cuando ya hay dos selecciones, envío form tras breve delay
       if (picks.length === 2) {
-        // completar campos ocultos y enviar form
-        document.getElementById('x1').value = picks[0].x;
-        document.getElementById('y1').value = picks[0].y;
-        document.getElementById('x2').value = picks[1].x;
-        document.getElementById('y2').value = picks[1].y;
-        document.getElementById('playForm').submit();
+        setTimeout(() => {
+          document.getElementById('x1').value = picks[0].x;
+          document.getElementById('y1').value = picks[0].y;
+          document.getElementById('x2').value = picks[1].x;
+          document.getElementById('y2').value = picks[1].y;
+          document.getElementById('playForm').submit();
+        }, 600);
       }
     }
+
+    // Inicio el polling al cargar la página
+    window.addEventListener('load', () => startPolling());
   </script>
 </body>
 </html>

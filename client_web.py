@@ -2,12 +2,14 @@ from flask import Flask, jsonify, render_template, request, redirect, session, u
 import grpc
 import memory_game_pb2 as pb
 import memory_game_pb2_grpc as pb_grpc
+import os
 
 app = Flask(__name__)
 app.secret_key = "jugador_secreto_123"
 
 # Conexión gRPC al servidor
-channel = grpc.insecure_channel("localhost:50051")
+SERVER_ADDR = os.environ.get("MEMORY_SERVER", "localhost:50051")
+channel = grpc.insecure_channel(SERVER_ADDR)
 stub = pb_grpc.MemoryGameStub(channel)
 
 @app.route("/", methods=["GET", "POST"])

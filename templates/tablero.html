@@ -73,6 +73,9 @@
   </ul>
 
   <script>
+    // Identificadores en JS
+    const myId = "{{ session['player_id'] }}";
+    let currentTurnId = "{{ turno_id }}";
     let picks = [], polling;
 
     function startPolling() {
@@ -89,14 +92,14 @@
       // 1) Actualiza celdas
       data.cells.forEach(c => {
         const td = document.getElementById(`cell-${c.x}-${c.y}`);
-        // no pisar las que el usuario ya acaba de seleccionar
-        if (picks.some(p=>p.x===c.x && p.y===c.y)) return;
+        if (picks.some(p => p.x === c.x && p.y === c.y)) return;
         const show = c.revealed || c.matched;
         td.innerText = show ? c.value : '🂠';
         td.classList.toggle('flipped', show);
       });
 
-      // 2) Actualiza turno
+      // 2) Actualiza turno dinámicamente
+      currentTurnId = data.current_turn_id;
       document.getElementById('turno').innerText = data.current_turn_name;
 
       // 3) Actualiza puntajes
@@ -104,12 +107,12 @@
       ul.innerHTML = '';
       for (const [pid, pts] of Object.entries(data.scores)) {
         const li = document.createElement('li');
-        const name = data.player_names[pid] || pid.slice(0,8);
+        const name = data.player_names[pid] || pid.slice(0, 8);
         li.innerHTML = `<strong>${name}</strong>: ${pts} parejas`;
         ul.appendChild(li);
       }
 
-      // 4) Si terminó, muestro banner y detengo polling
+      // 4) Banner game over
       if (data.game_over) {
         stopPolling();
         document.getElementById('winnerName').innerText = data.winner_name;
@@ -117,23 +120,20 @@
       }
     }
 
-    function onCardClick(x,y) {
-      // 1) Si no es tu turno o ya volteada, ignoro
-      if ("{{ turno_id }}" !== "{{ session['player_id'] }}"
-          || document.getElementById(`cell-${x}-${y}`).classList.contains('flipped')) {
-        return;
-      }
+    function onCardClick(x, y) {
+      // Solo si es mi turno
+      if (myId !== currentTurnId) return;
+      const cell = document.getElementById(`cell-${x}-${y}`);
+      if (cell.classList.contains('flipped')) return;
 
-      // 2) Detengo refresco automático para no sobreescribir selección
+      // Detiene refresco para preservar selección
       stopPolling();
 
-      // 3) Revelo visualmente
-      const cell = document.getElementById(`cell-${x}-${y}`);
+      // Revela visualmente
       cell.classList.add('flipped');
       cell.innerText = cell.dataset.value;
-      picks.push({x,y});
+      picks.push({x, y});
 
-      // 4) Cuando ya hay dos selecciones, envío form tras breve delay
       if (picks.length === 2) {
         setTimeout(() => {
           document.getElementById('x1').value = picks[0].x;
@@ -145,8 +145,7 @@
       }
     }
 
-    // Inicio el polling al cargar la página
-    window.addEventListener('load', () => startPolling());
+    window.addEventListener('load', startPolling);
   </script>
 </body>
 </html>

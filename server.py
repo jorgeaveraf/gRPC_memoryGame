@@ -115,6 +115,7 @@ class MemoryGameService(pb_grpc.MemoryGameServicer):
                     yield self._make_boardstate(
                         self.game.get_public_view(reveal_for=pid)
                     )
+                    self.game.new_round_flag = False
                     sub_ev.clear()
             finally:
                 # cuando el cliente cierra el stream
@@ -140,6 +141,7 @@ class MemoryGameService(pb_grpc.MemoryGameServicer):
 
     def _make_boardstate(self, cells):
         pb_cells = []
+        nr = self.game.new_round_flag
         for c in cells:
            x, y = c["x"], c["y"]
            actual = self.game.board[x][y]
@@ -149,13 +151,19 @@ class MemoryGameService(pb_grpc.MemoryGameServicer):
                revealed=c["revealed"],
                matched=c["matched"]
            ))
-        return pb.BoardState(
+           state = pb.BoardState(
             cells=pb_cells,
             current_turn_player_id=self.game.get_current_turn_player(),
             scores=self.game.scores,
             player_names=self.game.players,
-            game_over=self.game.is_game_over()
-        )
+            game_over=self.game.is_game_over(),
+            new_round=nr,
+            theme_name=self.game.theme_name,
+            difficulty=self.game.difficulty
+         )
+         # resetear para la próxima emisión
+        self.game.new_round_flag = False
+        return state
 
     def notify_all(self):
         for pid, ev in self.subscribers:
@@ -190,7 +198,7 @@ def serve():
     service = MemoryGameService()
 
     # 2) Arranca el hilo que vigila inactividad
-    start_inactivity_monitor(service, timeout=30, check_interval=10)
+    start_inactivity_monitor(service, timeout=50, check_interval=10)
 
     # 3) Monta el servidor gRPC con esa instancia
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

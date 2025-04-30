@@ -6,6 +6,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "jugador_secreto_123"
+app.config['SESSION_COOKIE_NAME'] = 'player_session'
 
 # Conexión gRPC al servidor
 SERVER_ADDR = os.environ.get("MEMORY_SERVER", "localhost:50051")
@@ -64,7 +65,14 @@ def jugar_post():
 @app.route("/state")
 def state():
     # 1. Obtengo ID del cliente desde sesión o parámetro
-    pid = session["player_id"]
+    pid = session.get("player_id")
+    if pid is None:
+        # Ya no tengo un player_id en sesión → obligo a re­-login
+        return jsonify({
+            "new_round": True,
+            "theme_name": None,
+            "difficulty": None
+        }), 200
 
     # 2. Invoco el RPC que me devuelve el estado completo
     resp = stub.GetBoardState(pb.PlayerId(id=pid))
@@ -81,6 +89,9 @@ def state():
     names  = dict(resp.player_names)
     game_over = resp.game_over
     current_id = resp.current_turn_player_id
+    new_round   = resp.new_round
+    theme_name  = resp.theme_name
+    difficulty  = resp.difficulty
 
     # 5. Si terminó, calculo ganador/es
     winner_name = ""
@@ -98,7 +109,10 @@ def state():
         "scores": scores,
         "player_names": names,
         "game_over": game_over,
-        "winner_name": winner_name
+        "winner_name": winner_name,
+        "new_round": new_round,
+        "theme_name": theme_name,
+        "difficulty": difficulty
     })
 
 

@@ -73,79 +73,92 @@
   </ul>
 
   <script>
-    // Identificadores en JS
     const myId = "{{ session['player_id'] }}";
-    let currentTurnId = "{{ turno_id }}";
-    let picks = [], polling;
-
+    let currentTurnId = "{{ turno_id }}",
+        picks = [],
+        polling;
+  
     function startPolling() {
       polling = setInterval(fetchBoard, 3000);
     }
     function stopPolling() {
       clearInterval(polling);
     }
-
+  
     async function fetchBoard() {
-      const res = await fetch('/state');
-      const data = await res.json();
-
-      // 1) Actualiza celdas
+      let res, data;
+      try {
+        res = await fetch('/state');
+        data = await res.json();
+      } catch (e) {
+        // si el servidor devolvió 500 o perdimos sesión, volvemos al login
+        return window.location = '/';
+      }
+  
+      console.log("[DEBUG fetchBoard] new_round=", data.new_round,
+                  "theme=", data.theme_name, "diff=", data.difficulty);
+  
+      // 1) Detectar NUEVA RONDA antes que nada
+      if (data.new_round) {
+        const ok = confirm(
+          `🔔 ¡Nueva partida iniciada!\n` +
+          `Tema: ${data.theme_name}\n` +
+          `Nivel: ${data.difficulty}\n\n` +
+          `¿Quieres unirte sin volver a registrarte?`
+        );
+        if (!ok) {
+          stopPolling();
+          return;
+        }
+        // si acepta, recargamos para reiniciar la UI conservando session
+        return window.location.reload();
+      }
+  
+      // 2) Actualizar tablero normalmente…
       data.cells.forEach(c => {
         const td = document.getElementById(`cell-${c.x}-${c.y}`);
-        if (picks.some(p => p.x === c.x && p.y === c.y)) return;
+        if (picks.some(p=>p.x===c.x && p.y===c.y)) return;
         const show = c.revealed || c.matched;
         td.innerText = show ? c.value : '🂠';
         td.classList.toggle('flipped', show);
       });
-
-      // 2) Actualiza turno dinámicamente
+  
+      // 3) Turno y puntajes
       currentTurnId = data.current_turn_id;
       document.getElementById('turno').innerText = data.current_turn_name;
-
-      // 3) Actualiza puntajes
       const ul = document.getElementById('scores');
       ul.innerHTML = '';
-      for (const [pid, pts] of Object.entries(data.scores)) {
-        const li = document.createElement('li');
-        const name = data.player_names[pid] || pid.slice(0, 8);
-        li.innerHTML = `<strong>${name}</strong>: ${pts} parejas`;
-        ul.appendChild(li);
+      for (let [pid, pts] of Object.entries(data.scores)) {
+        let name = data.player_names[pid]||pid.slice(0,8);
+        ul.innerHTML += `<li><strong>${name}</strong>: ${pts} parejas</li>`;
       }
-
-      // 4) Banner game over
+  
+      // 4) Banner de fin de juego (sin parar el polling)
       if (data.game_over) {
-        stopPolling();
         document.getElementById('winnerName').innerText = data.winner_name;
         document.getElementById('gameOverBanner').style.display = 'block';
       }
     }
-
-    function onCardClick(x, y) {
-      // Solo si es mi turno
-      if (myId !== currentTurnId) return;
+  
+    function onCardClick(x,y) {
+      if (myId!==currentTurnId) return;
       const cell = document.getElementById(`cell-${x}-${y}`);
       if (cell.classList.contains('flipped')) return;
-
-      // Detiene refresco para preservar selección
       stopPolling();
-
-      // Revela visualmente
       cell.classList.add('flipped');
       cell.innerText = cell.dataset.value;
-      picks.push({x, y});
-
-      if (picks.length === 2) {
-        setTimeout(() => {
-          document.getElementById('x1').value = picks[0].x;
-          document.getElementById('y1').value = picks[0].y;
-          document.getElementById('x2').value = picks[1].x;
-          document.getElementById('y2').value = picks[1].y;
+      picks.push({x,y});
+      if (picks.length===2) {
+        setTimeout(()=>{
+          document.getElementById('x1').value=picks[0].x;
+          document.getElementById('y1').value=picks[0].y;
+          document.getElementById('x2').value=picks[1].x;
+          document.getElementById('y2').value=picks[1].y;
           document.getElementById('playForm').submit();
-        }, 600);
+        },600);
       }
     }
-
+  
     window.addEventListener('load', startPolling);
   </script>
-</body>
 </html>

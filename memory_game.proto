@@ -56,7 +56,10 @@ message Cell {
 message BoardState {
   repeated Cell cells = 1;
   string current_turn_player_id = 2;
-  map<string, int32> scores = 3;  // player_id → score
+  map<string, int32> scores = 3;
   map<string, string> player_names = 4;
-  bool game_over = 5;
+  bool   new_round = 5;
+  string theme_name = 6;
+  string difficulty = 7;
+  bool game_over = 8;
 }

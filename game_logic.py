@@ -20,7 +20,7 @@ class Game:
         # Estado del juego (se inicializa en reset_game)
         self.theme_name     = None
         self.difficulty     = None
-        self.size           = None
+        self.size           = size
         self.board          = []
 
         # Jugadores y perfiles
@@ -39,11 +39,12 @@ class Game:
         # Puntuaciones y cartas emparejadas
         self.scores         = {}  # pid → parejas conseguidas
         self.matched        = set()
+        self.new_round_flag = True
 
     def reset_game(self, theme_name, difficulty):
         """Reinicia todo: tablero, jugadores, métricas, etc."""
         with self.lock:
-            # Limpia métricas y temporales
+            # Reiniciar métricas y estado de jugadores
             self.metrics.clear()
             self.turn_start.clear()
             self.players.clear()
@@ -53,38 +54,31 @@ class Game:
             self.current_turn = 0
             self.scores.clear()
             self.matched.clear()
+            self.last_seen = {}
 
-            # Selección de tema y tamaño
+            # Configurar tema y dificultad
             self.theme_name = theme_name
             self.difficulty = difficulty
             if difficulty == "easy":
                 self.size = self.initial_size
-                base = Game.THEMES.get(theme_name, Game.THEMES["emojis"])
             else:
-                # hard: tamaño doble, ficha mezclada
+                # Dificultad hard duplica el tablero
                 self.size = self.initial_size * 2
-                base = []
-                for lst in Game.THEMES.values():
-                    base.extend(lst)
+            # Seleccionar lista base según tema siempre
+            base = Game.THEMES.get(theme_name, Game.THEMES['emojis'])
 
-            # Construcción del mazo con pares
+            # Construir mazo con total_pairs parejas
             total_cards = self.size * self.size
             total_pairs = total_cards // 2
-            # Repetir cada símbolo el número de pares necesario
             deck = []
-            icons = base[:total_pairs] if difficulty=="easy" else base
-            for icon in icons:
+            # Crear lista de íconos cíclica para cubrir total_pairs
+            icons_list = [base[i % len(base)] for i in range(total_pairs)]
+            for icon in icons_list:
                 deck.extend([icon, icon])
-            # Si faltan cartas (redondeo), rellenar con más pares
-            idx = 0
-            while len(deck) < total_cards:
-                icon = base[idx % len(base)]
-                deck.extend([icon, icon])
-                idx += 1
 
+            # Mezclar y formar la matriz
             random.shuffle(deck)
-            # Matriz
-            self.board = [deck[i:i+self.size]
+            self.board = [deck[i:i + self.size]
                           for i in range(0, total_cards, self.size)]
 
             print(f"→ Nuevo juego: tema={self.theme_name}, nivel={self.difficulty}, size={self.size}×{self.size}")
@@ -190,3 +184,62 @@ class Game:
 
     def is_game_over(self):
         return len(self.matched) == self.size * self.size
+    
+    def configure(self, theme_name, difficulty):
+        """Llamar solo la primera vez: borra también los jugadores."""
+        self.reset_game(theme_name, difficulty)  # deja tu impl actual
+        self.new_round_flag = True
+
+    def new_round(self, theme_name=None, difficulty=None):
+        """
+        Inicia una nueva ronda manteniendo los players:
+        - Si me pasan theme/difficulty, reconfiguro tematica.
+        - Sino uso la actual.
+        """
+        self.new_round_flag = True
+        with self.lock:
+            # 1) Si cambian tema o nivel, actualízalos
+            if theme_name is not None:
+                self.theme_name = theme_name
+            if difficulty is not None:
+                self.difficulty = difficulty
+
+            # 2) Regenerar tablero igual que en reset_game, pero
+            #    _solo_ esa parte
+            if self.difficulty == "easy":
+                self.size = self.initial_size
+            else:
+                self.size = self.initial_size * 2
+
+            base = Game.THEMES[self.theme_name]
+            total_cards = self.size * self.size
+            total_pairs = total_cards // 2
+
+            # Construir mazo con pares usando solo el tema elegido
+            icons = [base[i % len(base)] for i in range(total_pairs)]
+            deck = []
+            for icon in icons:
+                deck.extend([icon, icon])
+
+            random.shuffle(deck)
+            self.board = [deck[i:i + self.size]
+                          for i in range(0, total_cards, self.size)]
+
+            # 3) Resetear estado de la ronda (pero no players)
+            self.matched.clear()
+            for pid in self.players:
+                self.scores[pid] = 0
+                # resetear métricas de cada jugador
+                self.metrics[pid].update({
+                    "turns": 0,
+                    "turn_durations": [],
+                    "pairs": 0,
+                    "join_time": time.time()
+                })
+                self.join_times[pid] = time.time()
+            self.turn_order = list(self.players.keys())
+            self.current_turn = 0
+            # arrancar timer del primer jugador
+            if self.turn_order:
+                self.turn_start[self.turn_order[0]] = time.time()
+            
